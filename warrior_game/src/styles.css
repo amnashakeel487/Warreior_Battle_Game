@@ -24,10 +24,13 @@
 /* ── Body & Background ── */
 body {
   min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport height — fixes mobile browser bar */
   background: radial-gradient(ellipse at 50% 0%, #2e2318 0%, var(--stone-dark) 65%);
   color: var(--parchment);
   font-family: 'Crimson Text', Georgia, serif;
   overflow-x: hidden;
+  /* safe area for iPhone notch / home bar */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Subtle animated ember vignette */
@@ -278,13 +281,221 @@ kbd {
 /* hide side columns on narrow screens */
 @media (max-width: 900px) {
   .page-layout {
-    grid-template-columns: 0 1fr 0;
+    display: block;
   }
   .side-col {
     display: none;
   }
   .arena {
-    padding: 24px 14px 50px;
+    padding: 16px 12px 80px;
+  }
+}
+
+/* ── Mobile: 480px and below ── */
+@media (max-width: 480px) {
+  .title {
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 2px;
+  }
+
+  .subtitle {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+  }
+
+  .roster {
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  .roster-item {
+    font-size: 9px;
+    padding: 3px 7px;
+  }
+
+  /* Stage — taller so sprites don't feel cramped */
+  .stage-panel {
+    padding: 8px 12px 10px;
+    margin-bottom: 10px;
+  }
+
+  .stage {
+    height: 130px;
+    padding: 0 8px 6px;
+  }
+
+  .sprite-wrap svg {
+    width: 72px;
+    height: 86px;
+  }
+
+  .sprite-wrap {
+    width: 80px;
+  }
+
+  /* Status panels */
+  .panel {
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+
+  .combatant-name {
+    font-size: 15px;
+  }
+
+  .combatant-subtitle {
+    font-size: 10px;
+  }
+
+  .hp-text {
+    font-size: 12px;
+  }
+
+  .bar-track {
+    height: 11px;
+  }
+
+  .stats-strip {
+    font-size: 11px;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  /* Action buttons — bigger tap targets */
+  .actions {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  button.action-btn {
+    font-size: 12px;
+    padding: 16px 6px 14px;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    min-height: 56px;
+  }
+
+  /* Hide keyboard hint on mobile — irrelevant on touch */
+  .key-hint {
+    display: none;
+  }
+
+  /* Combat log — shorter on mobile */
+  .log-panel {
+    height: 130px;
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  /* Popup */
+  .popup-box {
+    padding: 24px 20px 22px;
+    width: 96%;
+    border-radius: 10px;
+  }
+
+  .popup-icon {
+    font-size: 42px;
+    margin-bottom: 8px;
+  }
+
+  .popup-title {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .popup-enemy-name {
+    font-size: 15px;
+  }
+
+  .popup-body {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .popup-btn {
+    padding: 14px 16px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    min-height: 52px;
+  }
+
+  .key-hint-popup {
+    display: none;
+  }
+
+  /* End screen */
+  .end-screen {
+    padding: 20px 10px;
+  }
+
+  .end-icon {
+    font-size: 46px;
+    margin-bottom: 8px;
+  }
+
+  .end-title {
+    font-size: 22px;
+    letter-spacing: 1.5px;
+  }
+
+  .end-sub {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  /* Stats grid: 2 columns on mobile instead of 3 */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 12px;
+    margin: 14px 0 12px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+  }
+
+  .restart-btn {
+    padding: 14px 24px;
+    font-size: 13px;
+    margin-top: 14px;
+    width: 100%;
+    min-height: 52px;
+  }
+}
+
+/* ── Tablet: 481px – 768px ── */
+@media (min-width: 481px) and (max-width: 768px) {
+  .arena {
+    padding: 20px 16px 60px;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  button.action-btn {
+    padding: 15px 8px;
+    min-height: 52px;
+  }
+
+  .key-hint {
+    display: none;
+  }
+
+  .log-panel {
+    height: 160px;
+  }
+
+  .popup-box {
+    padding: 28px 28px 24px;
   }
 }
 
@@ -514,6 +725,8 @@ button.action-btn {
   transition: all 0.15s ease;
   position: relative;
   overflow: hidden;
+  touch-action: manipulation; /* remove 300ms tap delay on mobile */
+  -webkit-tap-highlight-color: transparent;
 }
 
 button.action-btn::after {
@@ -941,6 +1154,8 @@ button.action-btn.emergency:hover:not(:disabled) {
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .popup-btn:hover {
@@ -996,6 +1211,8 @@ button.action-btn.emergency:hover:not(:disabled) {
   cursor: pointer;
   margin-top: 22px;
   transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .restart-btn:hover {

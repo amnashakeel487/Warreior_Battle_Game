@@ -1,67 +1,171 @@
-# Warrior — Turn-Based Battle Game (React version)
+# ⚔ Warrior — Turn-Based Battle Game
 
-A React rebuild of the browser Warrior game, using Vite as the dev/build tool.
+A browser-based turn-based RPG battle game built with **React + Vite**. Fight your way through 5 progressively harder enemies, each with a unique sprite and special ability. No game engine — just React, CSS animations, and hand-crafted SVG sprites.
 
-## Folder structure
+🔴 **Live Demo:** [warreior-battle-game.vercel.app](https://warreior-battle-game.vercel.app)
+
+---
+
+## Screenshots
+
+> The game features a full-width layout with animated torch side panels, battle stage, HP bars, combat log, and per-enemy victory popups.
+
+---
+
+## Features
+
+### ⚔ Combat System
+- Turn-based — player acts first, then the enemy responds
+- **Critical Hit system** — 20% chance to deal 1.75× damage with an orange screen flash
+- **Attack**, **Heal** (potion-based), and **Emergency Heal** (+50 HP, once per run) actions
+- Keyboard shortcuts: `A` Attack · `H` Heal · `E` Emergency · `Enter` Continue
+
+### 👹 5 Unique Enemies
+Each enemy has a hand-drawn SVG sprite, a title, and a special combat ability:
+
+| Enemy | Title | Special Ability |
+|---|---|---|
+| Scrappy Goblin | Forest Pest | 25% chance to **dodge** your attack |
+| Goblin Shaman | Cursed Trickster | 20% chance to **curse** you (-3 ATK) |
+| Iron Orc | Brute Warrior | 20% chance to **enrage** (+4 ATK permanently) |
+| Orc Warlord | Champion of Chaos | 20% chance to **double strike** (hits twice) |
+| Inferno Dragon | Lord of Destruction | 25% chance for **Fire Breath** (150% damage) |
+
+### 🎮 Progression & Rewards
+- Defeating each enemy grants a permanent **ATK boost** to the player
+- Reward shown in a dedicated **victory popup** after each kill
+- Enemy tracker on the right side panel updates live as you progress
+
+### 🎨 Visual Polish
+- Unique **SVG sprites** for all 5 enemies + the player warrior — built in code, no images
+- **Enemy death animation** — falls and fades before the popup appears
+- **Slide-in animation** when a new enemy enters the arena
+- **HP bars** shift color: red → orange → yellow as enemy HP drops
+- 25% tick marks on all HP bars
+- **Low HP warning** — player panel pulses red and blinks "⚠ Low HP" when below 25%
+- **Battle stage background** changes color per enemy type (green, purple, brown, dark red)
+- **Arena flash** on crits (orange) and fire breath (deep red)
+- Idle bobbing animation on all sprites
+- Floating damage/heal numbers pop off sprites on every hit
+
+### 🏛 Layout
+- **3-column layout** — animated torch side panels fill the screen on desktop
+- Left panel: chapter title + decorative runes
+- Right panel: live enemy progress tracker + keyboard shortcut reference
+- Panels hidden automatically on mobile (responsive)
+
+### 📊 End Screen Stats
+After every run (win or lose) you see a full battle report:
+
+| Stat | Description |
+|---|---|
+| Kills | Enemies defeated |
+| Crits | Critical hits you landed |
+| DMG Dealt | Total damage dealt to enemies |
+| DMG Taken | Total damage received |
+| Specials | Enemy special abilities that fired |
+| Potions Left | Remaining potions |
+
+---
+
+## Tech Stack
+
+| Technology | Use |
+|---|---|
+| React 18 | UI components and state management |
+| Vite 5 | Dev server and production build |
+| CSS3 | All animations, layout, theming |
+| SVG | All sprites (no image files) |
+| Vercel | Hosting and CI/CD |
+
+---
+
+## Project Structure
 
 ```
-warrior_game_react/
-├── index.html                 Vite entry HTML — loads src/main.jsx
+warrior_game/
+├── index.html                  Vite entry HTML
 ├── package.json                Dependencies and scripts
 ├── vite.config.js              Vite + React plugin config
+├── vercel.json                 Vercel deployment config
 └── src/
-    ├── main.jsx                 Mounts <App /> into #root
-    ├── App.jsx                  Main game state and turn logic
-    ├── styles.css                Theme, layout, animations (unchanged from CSS version)
+    ├── main.jsx                Mounts <App /> into #root
+    ├── App.jsx                 All game state, turn logic, special abilities
+    ├── styles.css              Full theme, layout, animations, side panels
     ├── data/
-    │   └── enemies.js            Starting stats for player + enemies, rand() helper
+    │   └── enemies.js          Enemy definitions (stats, specials, rewards), rand(), isCrit()
     └── components/
-        ├── Sprites.jsx            SVG sprite components (warrior, goblin, orc, dragon)
-        ├── BattleStage.jsx        The sprite arena + floating damage numbers
-        ├── StatusPanel.jsx        HP bars for player and enemy
-        ├── GameUI.jsx             Buttons, roster strip, combat log, end screen
-        └── FloatingNumber.jsx     A single floating +/- number, self-removes after 900ms
+        ├── Sprites.jsx         SVG sprite components — PlayerSprite + 5 unique EnemySprites
+        ├── BattleStage.jsx     Battle arena, wave progress pips, floating numbers
+        ├── StatusPanel.jsx     HP bars with tick marks, ATK modifier badges, low HP pulse
+        ├── GameUI.jsx          Action buttons, roster, combat log, victory popup, end screen
+        └── FloatingNumber.jsx  Self-removing floating +/- number (damage, heal, crit, special)
 ```
 
-## How to run
+---
 
-You need [Node.js](https://nodejs.org) installed (v18+ recommended).
+## Running Locally
+
+You need [Node.js](https://nodejs.org) v18 or higher.
 
 ```bash
-cd warrior_game_react
+# 1. Clone the repo
+git clone https://github.com/YOUR_USERNAME/Warreior_Battle_Game.git
+cd Warreior_Battle_Game/warrior_game
+
+# 2. Install dependencies
 npm install
+
+# 3. Start dev server
 npm run dev
 ```
 
-Then open the local URL Vite prints (usually `http://localhost:5173`).
-
-To build a production version:
+Open `http://localhost:5173` in your browser.
 
 ```bash
+# Production build
 npm run build
+
+# Preview production build locally
+npm run preview
 ```
 
-This outputs static files to `dist/`, which you can deploy anywhere (Vercel, Netlify, GitHub Pages, etc).
+---
 
-## What changed from the plain HTML/CSS/JS version
+## Deploying to Vercel
 
-The visuals and rules are identical — same enemies, same damage ranges, same
-animations. What changed is how the UI is built:
+The project is pre-configured for Vercel via `vercel.json`.
 
-| Plain JS version | React version |
-|---|---|
-| One global `player` / `enemies` object, mutated directly | `useState` for `player`, `enemies`, `enemyIndex`, etc. — state updates trigger re-renders |
-| `render()` manually rebuilds `innerHTML` every turn | Components re-render automatically when state changes |
-| Animation classes added/left on DOM nodes directly | Animation state (`playerAnim`, `enemyAnim`, `shake`) lives in `useState`, cleared with `setTimeout` |
-| One big `game.js` file | Logic split into `App.jsx` (state + turns) and small presentational components (`BattleStage`, `StatusPanel`, `GameUI`) |
-| Floating damage numbers added/removed manually from the DOM | `FloatingNumber` component removes itself via a `useEffect` timer |
+**Option A — Dashboard**
+1. Push to GitHub
+2. Go to [vercel.com](https://vercel.com) → New Project → Import repo
+3. Set **Root Directory** to `warrior_game`
+4. Click Deploy — done
 
-## Extending it
+**Option B — CLI**
+```bash
+npm install -g vercel
+cd warrior_game
+vercel
+```
 
-To add a new mechanic (e.g. a "Defend" action or critical hits):
+Every `git push` to `main` triggers an automatic redeploy.
 
-1. Add fields to `INITIAL_PLAYER` or the enemy objects in `src/data/enemies.js`.
-2. Add a new handler function in `App.jsx` (following the pattern of `doAttack`/`doHeal`) that updates state via `setPlayer`/`setEnemies` and calls `addLog(...)`.
-3. Wire up a new button in `GameUI.jsx` if needed.
+---
 
-React re-renders the UI automatically — no manual `render()` call needed.
+## How to Extend
+
+Adding a new mechanic is straightforward:
+
+1. **New enemy** — add an entry to `INITIAL_ENEMIES` in `src/data/enemies.js` with `name`, `type`, `hp`, `attack`, `title`, `reward`, `atkBoost`, and `special`
+2. **New enemy sprite** — add a function in `Sprites.jsx` and register it in the `EnemySprite` switch
+3. **New player action** — add a handler in `App.jsx` following the `doAttack` / `doHeal` pattern, then wire a button in `GameUI.jsx`
+4. **New special ability** — add `id` and `chance` to the enemy's `special` field, then handle the `id` inside `runEnemyTurn` in `App.jsx`
+
+React re-renders automatically — no manual DOM updates needed.
+
+---
+
+## License
+
+MIT — free to use, modify, and distribute.
