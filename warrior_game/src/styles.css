@@ -24,14 +24,9 @@
 /* ── Body & Background ── */
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse at 50% 0%, #2e2318 0%, var(--stone-dark) 65%);
+  background: radial-gradient(ellipse at 50% 0%, #2e2318 0%, var(--stone-dark) 65%);
   color: var(--parchment);
   font-family: 'Crimson Text', Georgia, serif;
-  display: flex;
-  justify-content: center;
-  padding: 32px 16px 60px;
-  position: relative;
   overflow-x: hidden;
 }
 
@@ -54,12 +49,243 @@ body::before {
   100% { opacity: 1;   }
 }
 
-/* ── Arena ── */
-.arena {
-  width: 100%;
-  max-width: 640px;
+/* ── Page Layout: 3-column grid ── */
+.page-layout {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 640px) 1fr;
+  min-height: 100vh;
   position: relative;
   z-index: 1;
+}
+
+/* ── Arena (center column) ── */
+.arena {
+  padding: 32px 16px 60px;
+  width: 100%;
+}
+
+/* ── Side Columns ── */
+.side-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 12px;
+  border-left: 1px solid rgba(74, 61, 40, 0.4);
+  background: linear-gradient(180deg, #16120d 0%, #0e0b08 100%);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.side-right {
+  border-left: 1px solid rgba(74, 61, 40, 0.4);
+  border-right: none;
+}
+.side-left {
+  border-right: 1px solid rgba(74, 61, 40, 0.4);
+  border-left: none;
+}
+
+/* Stone brick texture via repeating gradient */
+.side-col::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 28px,
+      rgba(255,255,255,0.012) 28px,
+      rgba(255,255,255,0.012) 29px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.008) 40px,
+      rgba(255,255,255,0.008) 41px
+    );
+  pointer-events: none;
+}
+
+/* ── Torch ── */
+.side-torch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.side-torch.bottom {
+  margin-top: auto;
+  margin-bottom: 0;
+}
+
+.torch-svg {
+  width: 28px;
+  height: 52px;
+  filter: drop-shadow(0 0 6px rgba(201,130,20,0.5));
+}
+
+.torch-flame {
+  width: 14px;
+  height: 18px;
+  background: radial-gradient(ellipse at 50% 80%, #ff8c00, #ff4400 50%, transparent 80%);
+  border-radius: 50% 50% 30% 30%;
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: flicker 0.9s ease-in-out infinite alternate;
+  filter: blur(1px);
+}
+
+@keyframes flicker {
+  0%   { transform: translateX(-50%) scaleX(1)    scaleY(1)    rotate(-2deg); opacity: 0.9; }
+  33%  { transform: translateX(-50%) scaleX(0.85) scaleY(1.1)  rotate(2deg);  opacity: 1;   }
+  66%  { transform: translateX(-50%) scaleX(1.1)  scaleY(0.92) rotate(-1deg); opacity: 0.85;}
+  100% { transform: translateX(-50%) scaleX(0.9)  scaleY(1.05) rotate(3deg);  opacity: 1;   }
+}
+
+/* glow ring under torch */
+.side-torch::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(201,130,20,0.35), transparent 70%);
+  margin-top: 2px;
+  animation: flicker 1.2s ease-in-out infinite alternate;
+}
+
+/* ── Side typography ── */
+.side-rune {
+  font-size: 20px;
+  color: var(--gold);
+  opacity: 0.6;
+  margin: 10px 0 6px;
+  text-shadow: 0 0 10px rgba(201,162,39,0.4);
+}
+
+.side-rune.small {
+  font-size: 14px;
+  margin: 4px 0;
+  opacity: 0.45;
+}
+
+.side-divider {
+  width: 2px;
+  height: 24px;
+  background: linear-gradient(180deg, transparent, rgba(201,162,39,0.3), transparent);
+  margin: 8px auto;
+}
+
+.side-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  opacity: 0.55;
+  text-align: center;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.side-label-sub {
+  font-family: 'Crimson Text', serif;
+  font-size: 10px;
+  font-style: italic;
+  color: var(--parchment);
+  opacity: 0.3;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+/* ── Enemy progress list (right side) ── */
+.side-enemy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 6px 0;
+  width: 100%;
+}
+
+.side-enemy-entry {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--parchment);
+  opacity: 0.35;
+  letter-spacing: 0.3px;
+  text-align: left;
+  padding: 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.4s ease, color 0.4s ease;
+}
+
+.side-enemy-entry.active-enemy {
+  color: var(--gold-bright);
+  opacity: 1;
+  text-shadow: 0 0 8px rgba(230,188,60,0.4);
+}
+
+.side-enemy-entry.slain {
+  opacity: 0.2;
+  text-decoration: line-through;
+  color: #888;
+}
+
+/* ── Keyboard shortcuts panel ── */
+.side-keys {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px 0;
+  width: 100%;
+}
+
+.side-key-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--parchment);
+  opacity: 0.4;
+}
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 16px;
+  background: #2a2010;
+  border: 1px solid #5a4a28;
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* hide side columns on narrow screens */
+@media (max-width: 900px) {
+  .page-layout {
+    grid-template-columns: 0 1fr 0;
+  }
+  .side-col {
+    display: none;
+  }
+  .arena {
+    padding: 24px 14px 50px;
+  }
 }
 
 /* ── Title ── */

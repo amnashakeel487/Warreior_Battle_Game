@@ -12,6 +12,19 @@ function cloneEnemies() {
   return INITIAL_ENEMIES.map(e => ({ ...e }));
 }
 
+function TorchSVG() {
+  return (
+    <svg viewBox="0 0 24 60" xmlns="http://www.w3.org/2000/svg" className="torch-svg">
+      {/* Handle */}
+      <rect x="10" y="28" width="4" height="28" rx="2" fill="#6b4a2f" />
+      <rect x="10" y="28" width="4" height="6"  rx="1" fill="#c9a227" />
+      {/* Bowl */}
+      <path d="M6 18 q-1 10 6 14 q7 -4 6 -14 z" fill="#8a6030" />
+      <path d="M7 18 q0 8 5 11 q5 -3 5 -11 z" fill="#c9a227" opacity="0.6" />
+    </svg>
+  );
+}
+
 export default function App() {
   const [player,      setPlayer]      = useState({ ...INITIAL_PLAYER });
   const [enemies,     setEnemies]     = useState(cloneEnemies());
@@ -389,54 +402,115 @@ export default function App() {
   const currentTheme = bgTheme[currentEnemy?.type] || '';
 
   return (
-    <div className={`arena ${arenaFlash}`}>
-      <div className="title">⚔ Warrior ⚔</div>
-      <div className="subtitle">Turn-based battle for the kingdom</div>
+    <div className="page-layout">
+      {/* ── Left decorative column ── */}
+      <aside className="side-col side-left" aria-hidden="true">
+        <div className="side-torch">
+          <TorchSVG />
+          <div className="torch-flame" />
+        </div>
+        <div className="side-rune">✦</div>
+        <div className="side-divider" />
+        <div className="side-label">CHAPTER I</div>
+        <div className="side-label-sub">The Dark Kingdom</div>
+        <div className="side-divider" />
+        <div className="side-rune small">⚔</div>
+        <div className="side-rune small">🛡</div>
+        <div className="side-rune small">💀</div>
+        <div className="side-divider" />
+        <div className="side-torch bottom">
+          <TorchSVG />
+          <div className="torch-flame" />
+        </div>
+      </aside>
 
-      <Roster enemies={enemies} enemyIndex={enemyIndex} gameOver={gameOver} />
+      {/* ── Main game arena ── */}
+      <div className={`arena ${arenaFlash}`}>
+        <div className="title">⚔ Warrior ⚔</div>
+        <div className="subtitle">Turn-based battle for the kingdom</div>
 
-      {popup && (
-        <VictoryPopup
-          enemy={popup.defeatedEnemy}
-          nextEnemy={popup.nextEnemy}
-          reward={popup.reward}
-          atkBoost={popup.atkBoost}
-          onContinue={handleContinueAfterPopup}
-        />
-      )}
+        <Roster enemies={enemies} enemyIndex={enemyIndex} gameOver={gameOver} />
 
-      {gameOver ? (
-        <EndScreen result={gameOver} player={player} stats={stats} onRestart={resetGame} />
-      ) : (
-        <>
-          <BattleStage
-            enemyType={currentEnemy.type}
-            enemyIndex={enemyIndex}
-            totalEnemies={enemies.length}
-            theme={currentTheme}
-            playerAnim={playerAnim}
-            enemyAnim={enemyAnim}
-            enemyDead={enemyDead}
-            enemyEnter={enemyEnter}
-            shake={shake}
-            playerFloats={playerFloats}
-            enemyFloats={enemyFloats}
-            removePlayerFloat={removePlayerFloat}
-            removeEnemyFloat={removeEnemyFloat}
+        {popup && (
+          <VictoryPopup
+            enemy={popup.defeatedEnemy}
+            nextEnemy={popup.nextEnemy}
+            reward={popup.reward}
+            atkBoost={popup.atkBoost}
+            onContinue={handleContinueAfterPopup}
           />
-          <EnemyStatus enemy={currentEnemy} atkMod={enemyAtkMod} />
-          <PlayerStatus player={player} lowHp={playerLow} atkMod={playerAtkMod} />
-          <ActionButtons
-            onAttack={doAttack}
-            onHeal={doHeal}
-            onEmergency={doEmergencyHeal}
-            disabled={busy || !!popup}
-            healDisabled={player.potions <= 0}
-            emergencyUsed={emergencyUsed}
-          />
-          <CombatLog log={log} />
-        </>
-      )}
+        )}
+
+        {gameOver ? (
+          <EndScreen result={gameOver} player={player} stats={stats} onRestart={resetGame} />
+        ) : (
+          <>
+            <BattleStage
+              enemyType={currentEnemy.type}
+              enemyIndex={enemyIndex}
+              totalEnemies={enemies.length}
+              theme={currentTheme}
+              playerAnim={playerAnim}
+              enemyAnim={enemyAnim}
+              enemyDead={enemyDead}
+              enemyEnter={enemyEnter}
+              shake={shake}
+              playerFloats={playerFloats}
+              enemyFloats={enemyFloats}
+              removePlayerFloat={removePlayerFloat}
+              removeEnemyFloat={removeEnemyFloat}
+            />
+            <EnemyStatus enemy={currentEnemy} atkMod={enemyAtkMod} />
+            <PlayerStatus player={player} lowHp={playerLow} atkMod={playerAtkMod} />
+            <ActionButtons
+              onAttack={doAttack}
+              onHeal={doHeal}
+              onEmergency={doEmergencyHeal}
+              disabled={busy || !!popup}
+              healDisabled={player.potions <= 0}
+              emergencyUsed={emergencyUsed}
+            />
+            <CombatLog log={log} />
+          </>
+        )}
+      </div>
+
+      {/* ── Right decorative column ── */}
+      <aside className="side-col side-right" aria-hidden="true">
+        <div className="side-torch">
+          <TorchSVG />
+          <div className="torch-flame" />
+        </div>
+        <div className="side-rune">✦</div>
+        <div className="side-divider" />
+        <div className="side-label">ENEMIES</div>
+        <div className="side-enemy-list">
+          {INITIAL_ENEMIES.map((e, i) => (
+            <div
+              key={e.name}
+              className={`side-enemy-entry ${
+                i < enemyIndex ? 'slain' :
+                i === enemyIndex && !gameOver ? 'active-enemy' : ''
+              }`}
+            >
+              {i < enemyIndex ? '☠' : i === enemyIndex && !gameOver ? '▶' : '·'} {e.name}
+            </div>
+          ))}
+        </div>
+        <div className="side-divider" />
+        <div className="side-label">KEYBOARD</div>
+        <div className="side-keys">
+          <div className="side-key-row"><kbd>A</kbd> Attack</div>
+          <div className="side-key-row"><kbd>H</kbd> Heal</div>
+          <div className="side-key-row"><kbd>E</kbd> +50 HP</div>
+          <div className="side-key-row"><kbd>↵</kbd> Continue</div>
+        </div>
+        <div className="side-divider" />
+        <div className="side-torch bottom">
+          <TorchSVG />
+          <div className="torch-flame" />
+        </div>
+      </aside>
     </div>
   );
 }
