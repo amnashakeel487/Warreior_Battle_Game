@@ -8,7 +8,8 @@ A browser-based turn-based RPG battle game built with **React + Vite**. Fight yo
 
 ## Screenshots
 
-> The game features a full-width layout with animated torch side panels, battle stage, HP bars, combat log, and per-enemy victory popups.
+<img width="1883" height="941" alt="image" src="https://github.com/user-attachments/assets/9398fb85-e9b7-419b-ab7d-407a0e252c56" />
+
 
 ---
 
@@ -166,6 +167,12 @@ React re-renders automatically — no manual DOM updates needed.
 
 ---
 
-## License
+# 👩‍💻 Author
 
-MIT — free to use, modify, and distribute.
+**Amna Shakeel**
+
+Python Developer | Software Engineering Student | Game 
+
+---
+
+## ⭐ If you found this project useful, consider giving it a star on GitHub!
