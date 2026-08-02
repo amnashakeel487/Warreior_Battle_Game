@@ -57,6 +57,7 @@ body::before {
   display: grid;
   grid-template-columns: 1fr minmax(0, 640px) 1fr;
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
   z-index: 1;
 }
@@ -65,6 +66,8 @@ body::before {
 .arena {
   padding: 32px 16px 60px;
   width: 100%;
+  min-width: 0; /* prevent grid blowout */
+  overflow-x: hidden;
 }
 
 /* ── Side Columns ── */
@@ -278,79 +281,104 @@ kbd {
   flex-shrink: 0;
 }
 
-/* hide side columns on narrow screens */
+/* ══════════════════════════════════════
+   RESPONSIVE — hide sides on ≤900px
+   ══════════════════════════════════════ */
 @media (max-width: 900px) {
   .page-layout {
-    display: block;
+    display: block;        /* drop grid entirely — single column */
   }
   .side-col {
     display: none;
   }
   .arena {
-    padding: 16px 12px 80px;
+    padding: 20px 14px 70px;
+    max-width: 100%;
   }
 }
 
-/* ── Mobile: 480px and below ── */
+/* ══════════════════════════════════════
+   MOBILE — 480px and below
+   ══════════════════════════════════════ */
 @media (max-width: 480px) {
+
+  /* Title: shrink font AND letter-spacing to fit in one line */
   .title {
-    font-size: 22px;
-    letter-spacing: 2px;
+    font-size: 20px;
+    letter-spacing: 1.5px;
     margin-bottom: 2px;
   }
 
+  /* Subtitle: reduce everything so it stays on one line */
   .subtitle {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    margin-bottom: 14px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
   }
 
+  /* Roster: smaller pills, allow wrapping */
   .roster {
     gap: 4px;
     margin-bottom: 10px;
   }
 
   .roster-item {
-    font-size: 9px;
-    padding: 3px 7px;
+    font-size: 8px;
+    padding: 3px 6px;
+    letter-spacing: 0;
   }
 
-  /* Stage — taller so sprites don't feel cramped */
+  /* Battle stage */
   .stage-panel {
-    padding: 8px 12px 10px;
+    padding: 8px 10px 10px;
     margin-bottom: 10px;
   }
 
-  .stage {
-    height: 130px;
-    padding: 0 8px 6px;
+  .wave-counter {
+    gap: 4px;
+    margin-bottom: 8px;
   }
 
-  .sprite-wrap svg {
-    width: 72px;
-    height: 86px;
+  .wave-pip {
+    width: 20px;
+    height: 4px;
+  }
+
+  .stage {
+    height: 120px;
+    padding: 0 6px 4px;
   }
 
   .sprite-wrap {
-    width: 80px;
+    width: 72px;
+  }
+
+  .sprite-wrap svg {
+    width: 68px;
+    height: 80px;
   }
 
   /* Status panels */
   .panel {
-    padding: 12px 14px;
+    padding: 10px 12px;
     margin-bottom: 10px;
   }
 
+  .combatant-row {
+    margin-bottom: 8px;
+  }
+
   .combatant-name {
-    font-size: 15px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
   }
 
   .combatant-subtitle {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .hp-text {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .bar-track {
@@ -358,68 +386,99 @@ kbd {
   }
 
   .stats-strip {
-    font-size: 11px;
-    gap: 12px;
-    margin-top: 8px;
+    font-size: 10px;
+    gap: 10px;
+    margin-top: 7px;
   }
 
-  /* Action buttons — bigger tap targets */
+  .low-hp-badge {
+    font-size: 9px;
+  }
+
+  /* Action buttons — large comfortable tap targets */
   .actions {
-    gap: 8px;
+    gap: 7px;
     margin-bottom: 10px;
   }
 
   button.action-btn {
-    font-size: 12px;
-    padding: 16px 6px 14px;
-    letter-spacing: 0.5px;
+    font-size: 11px;
+    padding: 0;
+    letter-spacing: 0.3px;
     border-radius: 8px;
-    min-height: 56px;
+    min-height: 54px;
+    height: 54px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* Hide keyboard hint on mobile — irrelevant on touch */
+  /* Hide keyboard shortcut labels — not relevant on touch */
   .key-hint {
     display: none;
   }
 
-  /* Combat log — shorter on mobile */
+  /* Combat log */
   .log-panel {
-    height: 130px;
-    font-size: 13px;
-    padding: 10px 12px;
+    height: 120px;
+    font-size: 12px;
+    line-height: 1.45;
+    padding: 8px 10px;
+    clip-path: none;      /* clip-path looks bad at small sizes */
+    border-radius: 5px;
   }
 
-  /* Popup */
+  /* Victory popup */
   .popup-box {
-    padding: 24px 20px 22px;
+    padding: 20px 16px 18px;
     width: 96%;
     border-radius: 10px;
   }
 
   .popup-icon {
-    font-size: 42px;
-    margin-bottom: 8px;
+    font-size: 38px;
+    margin-bottom: 6px;
   }
 
   .popup-title {
-    font-size: 18px;
+    font-size: 16px;
     letter-spacing: 1px;
+    margin-bottom: 8px;
   }
 
   .popup-enemy-name {
-    font-size: 15px;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .popup-enemy-title {
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+
+  .popup-divider {
+    margin: 0 0 10px;
+  }
+
+  .popup-reward {
+    font-size: 10px;
+    padding: 4px 10px;
+    margin-bottom: 10px;
   }
 
   .popup-body {
-    font-size: 13px;
-    margin-bottom: 16px;
+    font-size: 12px;
+    margin-bottom: 14px;
+    line-height: 1.6;
   }
 
   .popup-btn {
-    padding: 14px 16px;
-    font-size: 12px;
-    letter-spacing: 1px;
-    min-height: 52px;
+    padding: 14px 12px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    min-height: 50px;
+    border-radius: 8px;
   }
 
   .key-hint-popup {
@@ -428,30 +487,35 @@ kbd {
 
   /* End screen */
   .end-screen {
-    padding: 20px 10px;
+    padding: 16px 8px;
   }
 
   .end-icon {
-    font-size: 46px;
+    font-size: 44px;
     margin-bottom: 8px;
   }
 
   .end-title {
-    font-size: 22px;
-    letter-spacing: 1.5px;
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
   }
 
   .end-sub {
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 6px;
   }
 
-  /* Stats grid: 2 columns on mobile instead of 3 */
+  .end-flavour {
+    font-size: 11px;
+  }
+
+  /* Stats grid: 2-column on mobile */
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    padding: 12px;
-    margin: 14px 0 12px;
+    padding: 10px;
+    margin: 12px 0 10px;
   }
 
   .stat-value {
@@ -459,26 +523,37 @@ kbd {
   }
 
   .stat-label {
-    font-size: 9px;
+    font-size: 8px;
+    margin-top: 2px;
   }
 
   .restart-btn {
-    padding: 14px 24px;
-    font-size: 13px;
-    margin-top: 14px;
+    padding: 14px 20px;
+    font-size: 12px;
+    letter-spacing: 0.8px;
+    margin-top: 12px;
     width: 100%;
     min-height: 52px;
+    border-radius: 8px;
   }
 }
 
-/* ── Tablet: 481px – 768px ── */
+/* ══════════════════════════════════════
+   TABLET — 481px to 768px
+   ══════════════════════════════════════ */
 @media (min-width: 481px) and (max-width: 768px) {
   .arena {
-    padding: 20px 16px 60px;
+    padding: 20px 18px 60px;
   }
 
   .title {
     font-size: 26px;
+    letter-spacing: 2px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    letter-spacing: 1.5px;
   }
 
   button.action-btn {
@@ -509,6 +584,9 @@ kbd {
   color: var(--gold-bright);
   text-shadow: 0 0 24px rgba(230,188,60,0.4), 0 2px 4px rgba(0,0,0,0.6);
   margin: 0 0 4px;
+  white-space: nowrap;        /* never break the title */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .subtitle {
@@ -519,6 +597,9 @@ kbd {
   letter-spacing: 2.5px;
   text-transform: uppercase;
   margin: 0 0 24px;
+  white-space: nowrap;        /* keep on one line */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── Panel ── */
@@ -670,6 +751,7 @@ kbd {
   justify-content: center;
   margin-bottom: 16px;
   flex-wrap: wrap;
+  padding: 0 4px;
 }
 
 .roster-item {
@@ -682,6 +764,7 @@ kbd {
   letter-spacing: 0.3px;
   cursor: default;
   transition: all 0.2s ease;
+  white-space: nowrap;  /* never let a roster name break mid-word */
 }
 
 .roster-item.current {
